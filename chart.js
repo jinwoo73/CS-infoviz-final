@@ -99,6 +99,7 @@ svg.append('g')
 //xaxis content(ages)
 
 
+
 const textElements = svg
   .append('g')
   .selectAll("text")
@@ -129,8 +130,16 @@ svg.append('g')
   .text("Age Range")
   .style("font-size","12px")
 
-
-
+  for (let i = 0; i <= 10; i++) {
+  const y = 60 + i * 19;
+  svg.append('g')
+    .append("text")
+    .attr("x", 45)
+    .attr("y", y)
+    .text(10 - i)
+    .style("font-size", "10px");
+}
+  
 function updateChart(manufacturer) {
   //  Create a filtered array of cereals based on the manufacturer
   var deaths;
