@@ -35,22 +35,15 @@
         <div>
             <label for="categorySelect">Death Data: </label>
             <select class="custom-select" id="categorySelect" onchange="onCategoryChanged()">
-              <option selected value="Total Deaths">Total Deaths</option>
-              <option value="Male Deaths">Male Deaths</option>
-              <option value="Male Rate per 100k">Male Rate per 100k</option>
-              <option value="Female Deaths">Female Deaths</option>
+              <option selected value="Total Deaths">Total Deaths per 500</option>
+              <option value="Male Deaths">Male Deaths per 300</option>
+              <option value="Male Rate per 100k">Male Rate per 25k</option>
+              <option value="Female Deaths">Female Deaths per 100</option>
               <option value="Female Rate per 100k">Female Rate per 100k</option>
-              <!-- <option value="Nabisco">Nabisco</option>
-              <option value="Post">Post</option> -->
             </select>
-            <!-- <form name = "cutoff">
-                <label for ="cutoffFilter" class = "show">Cutoff</label>
-                <input type = "text" id = "cutoff" placeholder = "0">
-            </form> -->
             <form method = "post" name = "cutoff" id ="form1">
                 <label for ="cutoffFilter" class = "show">Cutoff</label>
                 <input type = "text" id = "cutoff" placeholder = "0">
-                
             </form>
         </div>
     </div>
