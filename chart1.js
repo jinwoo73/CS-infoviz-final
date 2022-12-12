@@ -127,7 +127,7 @@ function onCategoryChanged() {
     .style("font-size","11px")
     .attr("transform", (d, i) => `rotate(-45 ${d[0]} ${d[1]})`);
   
-  chartG.append('text').text('Transportation Deaths')
+  chartG.append('text').text('Transportation Fatalities')
           .attr('x', chartWidth / 2)
           .attr('y', -20)
           .attr('text-anchor', 'middle')
