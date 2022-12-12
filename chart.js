@@ -58,11 +58,27 @@ d3.csv('transport.csv', dataPreprocessor).then(function(dataset) {
   let ages = data.map(d=>d.Age);
   xBandScale = d3.scaleBand()
   .range([0, chartWidth])
-  .domain(ages);
+  .domain(d3.range(data.length));
 
-  sugarScale = d3.scaleLinear()
+  totalDeathScale = d3.scaleLinear()
   .range([chartHeight, 0])
-  .domain([0, d3.max(data, function(d) { return d.totalDeaths; })]);
+  .domain([0, data.reduce((prev, cur) => cur.totalDeaths > prev.totalDeaths ? cur : prev).totalDeaths]);
+
+  maleDeathScale = d3.scaleLinear()
+  .range([chartHeight, 0])
+  .domain([0, data.reduce((prev, cur) => cur.maleDeaths > prev.maleDeaths ? cur : prev).maleDeaths]);
+
+  femaleDeathScale = d3.scaleLinear()
+  .range([chartHeight, 0])
+  .domain([0, data.reduce((prev, cur) => cur.femaleDeaths > prev.femaleDeaths ? cur : prev).femaleDeaths]);
+
+  maleRateScale = d3.scaleLinear()
+  .range([chartHeight, 0])
+  .domain([0, data.reduce((prev, cur) => cur.maleR > prev.totalDeaths ? cur : prev).totalDeaths]);
+
+  femaleRateScale = d3.scaleLinear()
+  .range([chartHeight, 0])
+  .domain([0, data.reduce((prev, cur) => cur.totalDeaths > prev.totalDeaths ? cur : prev).totalDeaths]);
 
   // chartG.selectAll(".bar")
   //      .data(data)
