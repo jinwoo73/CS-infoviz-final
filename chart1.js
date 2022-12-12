@@ -183,9 +183,21 @@ function onCategoryChanged() {
         .delay((d, i) => i / data.length * 500)
         .duration(250)
         .attr('transform', (d, i) => `translate(${5 + i * barBand}, 0)`);
-    const  totaldeaths = [1.7,0.9,4.6,8.3,8.1,7.2,6.2,5.4,5.0,5.3,5.9,5.3,4.0,3.1,2.4,1.7,1.8];
+    const  totaldeaths = [0.0,1.7,0.9,4.6,8.3,8.1,7.2,6.2,5.4,5.0,5.3,5.9,5.3,4.0,3.1,2.4,1.7,1.8];
     const maledeaths = [0.0,1.6,1.0,5.3,9.9,9.9,9.1,7.6,6.7,6.3,6.6,7.5,6.6,7.5,6.6,4.8,3.5,2.6,1.8,1.9];
-    if (manufacturer === "Male Deaths") {
+    if (manufacturer == "Total Deaths") {
+      groupEnter.append('rect')
+        .data(totaldeaths)
+        .attr('width', barWidth-2)
+        .attr('height', d =>  19*d)
+        .attr('x',function(d,i) {
+            return -38 + 2.7*i;
+        })
+        .attr('y', d => 190-19*d)
+        .attr('class', 'bar')
+    }
+    
+    else if (manufacturer === "Male Deaths") {
         groupEnter.append('rect')
         .data(maledeaths)
         .attr('width', barWidth-2)
@@ -217,17 +229,7 @@ function onCategoryChanged() {
         .attr('y', d => (femaleRateScale(d.femaleRate)))
         .attr('class', 'bar')
     }
-    // else if(manufacturer == "Total Deaths"){
-    //     console.log("you entered")
-        
-    //     groupEnter.append('rect')
-    //     .attr('width', barWidth)
-    //     // .attr('height', d => chartHeight - totalDeathScale(d.totalDeaths))
-    //     .attr('height','50')
-        
-    //     .attr('y', 141 )
-    //     .attr('class', 'bar')
-    // }
+    
 
     groupEnter.append('text')
         .attr('transform', (d, i) => `translate(15, ${chartHeight + 10}) rotate(-45)`)
