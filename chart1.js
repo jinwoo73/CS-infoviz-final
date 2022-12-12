@@ -45,7 +45,7 @@ function onCategoryChanged() {
   var barWidth;
   
   // scales
-  var sugarScale,totalDeathScale,femaleDeathScale,maleDeathScale,maleRateScale,femaleRateScale; // y axis
+  var totalDeathScale,femaleDeathScale,maleDeathScale,maleRateScale,femaleRateScale; // y axis
   var xBandScale; // x axis
   
   // Create a group element for appending chart elements
