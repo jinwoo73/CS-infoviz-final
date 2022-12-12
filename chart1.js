@@ -2,6 +2,7 @@
 function onCategoryChanged() {
     var select = d3.select('#categorySelect').node();
     var category = select.options[select.selectedIndex].value;
+    console.log(category);
     // Update chart with the selected category of cereal
     updateChart(category);
   }
@@ -47,7 +48,7 @@ function onCategoryChanged() {
   var barWidth;
   
   // scales
-  var sugarScale; // y axis
+  var sugarScale,totalDeathScale,femaleDeathScale,maleDeathScale,maleRateScale,femaleRateScale; // y axis
   var xBandScale; // x axis
   
   // Create a group element for appending chart elements
@@ -70,10 +71,28 @@ function onCategoryChanged() {
     .range([0, chartWidth])
     .domain(ages);
   
-    sugarScale = d3.scaleLinear()
+    // sugarScale = d3.scaleLinear()
+    // .range([chartHeight, 0])
+    // .domain([0, d3.max(data, function(d) { return d.totalDeaths; })]);
+    totalDeathScale = d3.scaleLinear()
     .range([chartHeight, 0])
-    .domain([0, d3.max(data, function(d) { return d.totalDeaths; })]);
-  
+    .domain([0, data.reduce((prev, cur) => cur.totalDeaths > prev.totalDeaths ? cur : prev).totalDeaths/1000.0]);
+
+    maleDeathScale = d3.scaleLinear()
+    .range([chartHeight, 0])
+    .domain([0, data.reduce((prev, cur) => cur.maleDeaths > prev.maleDeaths ? cur : prev).maleDeaths/1000.0]);
+
+    femaleDeathScale = d3.scaleLinear()
+    .range([chartHeight, 0])
+    .domain([0, data.reduce((prev, cur) => cur.femaleDeaths > prev.femaleDeaths ? cur : prev).femaleDeaths/1000.0]);
+
+    maleRateScale = d3.scaleLinear()
+    .range([chartHeight, 0])
+    .domain([0, data.reduce((prev, cur) => cur.maleRate > prev.maleRate ? cur : prev).maleRate]);
+
+    femaleRateScale = d3.scaleLinear()
+    .range([chartHeight, 0])
+    .domain([0, data.reduce((prev, cur) => cur.femaleRate > prev.femaleRate ? cur : prev).femaleRate]);
   
     // Add axes to chart
     addAxes();
@@ -88,7 +107,7 @@ function onCategoryChanged() {
   .scale(xBandScale)
   
   var yAxis = d3.axisLeft()
-  .scale(sugarScale)
+  .scale(totalDeathScale)
   
   svg.append('g')
     .attr('transform', `translate(${padding.l}, ${chartHeight + padding.t})`)
@@ -113,9 +132,9 @@ function onCategoryChanged() {
     .attr("transform", (d, i) => `rotate(-45 ${d[0]} ${d[1]})`);
   
   
-  svg.append('g')
-  .attr('transform', `translate(${padding.l}, ${padding.t})`)
-  .call(yAxis);
+//   svg.append('g')
+//   .attr('transform', `translate(${padding.l}, ${padding.t})`)
+//   .call(yAxis);
   
   chartG.append('text').text('Transportation Deaths')
           .attr('x', chartWidth / 2)
@@ -142,43 +161,74 @@ function onCategoryChanged() {
   
   function updateChart(manufacturer) {
     //  Create a filtered array of cereals based on the manufacturer
-    var deaths;
-    if (manufacturer === 'Total Deaths')
-        deaths = data.filter(d => d.manufacturer !== manufacturer);
-    else deaths = data.filter(d => d.manufacturer === manufacturer);
-  
+    // var deaths = manufacturer === 'Total Deaths' ? data : data.filter(d => d.manufacturer === manufacturer);
+    deaths = data;
+    console.log('Updating chart with', deaths.length, 'elements')
+    console.log(deaths)
+    console.log(manufacturer)
+    const cutoff = Number(document.getElementById('cutoff').value);
+    console.log(function(d){return maleDeathScale(d.maleDeaths)});
+    // deaths = deaths.filter(d => manufacturer >= cutoff)
+
     // **** Draw and Update your chart here ****
-    console.log(deaths);
-  
-    let ages = deaths.map(d=>d.age);
-  
-    // xBandScale.domain(ages).range([0,barBand*ages.length]);
-    xBandScale.domain(data.map(function(d) { return d.Age; }));
-    var oldChart = chartG.selectAll(".bar")
-         .data(deaths);
-        //  .attr("class",'bar');
-    var newChart = oldChart.enter()
-         .append("rect")
-         .attr("class","bar");
-    newChart.merge(oldChart)
-         .attr("x", function(d) { return xBandScale(d.age); })
-         .attr("y", function(d) { return sugarScale(d.maleDeaths); })
-         .attr("width", barWidth)
-         .attr("height", function(d) { return chartHeight - sugarScale(d.maleDeaths); })
-         .attr("fill", "#69b3a2");
-    newChart.append('g')
-         .attr('transform', `translate(${padding.l}, ${chartHeight + padding.t})`)
-         .selectAll("text")
-         .attr("transform", "rotate(-45)")
-         .style("text-anchor", "end");
-    var oldlabels = chartG.selectAll(".labels")
-         .data(deaths);
-        //  .attr("class",'bar');
-    var newlabels = oldlabels.enter()
-         .append("text")
-         .attr("class","labels");
-    // newlabels.merge(oldlabels)
-    // .attr('transform', `translate(${xBandScale(d.cerealName)},${sugarScale(d.sugar)})`)
-    //      .text(function(d) { return d.cerealName; })
-    oldChart.exit().remove();
-  }
+    const barGroups = chartG.selectAll('.bar-group')
+        .data(deaths, (d) => d.age)
+
+    const groupEnter = barGroups.enter()
+        .append('g')
+        .attr('class', 'bar-group')
+    groupEnter.merge(barGroups)
+        .transition()
+        .delay((d, i) => i / data.length * 500)
+        .duration(250)
+        .attr('transform', (d, i) => `translate(${5 + i * barBand}, 0)`);
+
+    if (manufacturer === "Male Deaths") {
+        groupEnter.append('rect')
+        
+        .attr('width', barWidth)
+        .attr('height', d => chartHeight - maleDeathScale(d.maleDeaths))
+        .attr('y', d => (maleDeathScale(d.maleDeaths)))
+        .attr('class', 'bar')
+    }
+    else if(manufacturer === "Female Deaths") {
+        groupEnter.append('rect')
+        .attr('width', barWidth)
+        .attr('height', d => chartHeight - femaleDeathScale(d.femaleDeaths))
+        .attr('y', d => (femaleDeathScale(d.femaleDeaths)))
+        .attr('class', 'bar')
+    }
+    else if(manufacturer === "Male Rate per 100k") {
+        groupEnter.append('rect')
+        .attr('width', barWidth)
+        .attr('height', d => chartHeight - maleRateScale(d.maleRate))
+        .attr('y', d => (maleRateScale(d.maleRate)))
+        .attr('class', 'bar')
+    }
+    else if(manufacturer === "Female Rate per 100k") {
+        groupEnter.append('rect')
+        .attr('width', barWidth)
+        .attr('height', d => chartHeight - femaleRateScale(d.femaleRate))
+        .attr('y', d => (femaleRateScale(d.femaleRate)))
+        .attr('class', 'bar')
+    }
+    else {
+        console.log("you entered")
+        
+        groupEnter.append('rect')
+        .attr('width', barWidth)
+        // .attr('height', d => chartHeight - totalDeathScale(d.totalDeaths))
+        .attr('height','50')
+        
+        .attr('y', 141 )
+        .attr('class', 'bar')
+    }
+
+    groupEnter.append('text')
+        .attr('transform', (d, i) => `translate(15, ${chartHeight + 10}) rotate(-45)`)
+        .text(d => d.age)
+        .attr('font-size', '14px')
+        .attr('text-anchor', 'end');
+
+    barGroups.exit().remove();
+}
