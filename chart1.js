@@ -55,6 +55,11 @@ function onCategoryChanged() {
     .attr('transform', `translate(${padding.l}, ${padding.t})`);
   
   var data;
+    
+  d3.select('#main')
+    .append('button')
+    .text('Filter Data')
+    .on('click', onCategoryChanged);
   
   d3.csv('transport.csv', dataPreprocessor).then(function(dataset) {
     // Create global variables here and intialize the chart
