@@ -201,7 +201,18 @@ function onCategoryChanged() {
         return -38 + 2.7 * i;
       })
       .attr('y', d => 190 - 19 * d)
-      .attr('class', 'bar')
+      .attr('class', function(d) {
+        if (d <cutoff) {
+          return "emptybar"
+        }
+        return "bar"
+      })
+      
+      // .attr('color',function(d) {
+      //   if (d < cutoff) {
+      //     return 'white';
+      //   }
+      // })
   }
   
   switch (manufacturer) {
