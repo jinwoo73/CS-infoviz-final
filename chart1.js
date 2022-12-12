@@ -16,8 +16,6 @@ function onCategoryChanged() {
   
   d3.select("body")
     .style("background-color", "lightblue");
-  // recall that when data is loaded into memory, numbers are loaded as strings
-  // this function helps convert numbers into string during data preprocessing
   function dataPreprocessor(row) {
     return {
         age: row['Age'],
@@ -65,7 +63,7 @@ function onCategoryChanged() {
     // Create global variables here and intialize the chart
     data = dataset;
   
-    // Compute the spacing for bar bands based on number of cereals
+    // Compute the spacing for bar bands based on number of elements
     barBand = chartWidth / data.length;
     barWidth = 0.7 * barBand;
   
@@ -75,9 +73,6 @@ function onCategoryChanged() {
     .range([0, chartWidth])
     .domain(ages);
   
-    // sugarScale = d3.scaleLinear()
-    // .range([chartHeight, 0])
-    // .domain([0, d3.max(data, function(d) { return d.totalDeaths; })]);
     totalDeathScale = d3.scaleLinear()
     .range([chartHeight, 0])
     .domain([0, data.reduce((prev, cur) => cur.totalDeaths > prev.totalDeaths ? cur : prev).totalDeaths/1000.0]);
@@ -101,7 +96,7 @@ function onCategoryChanged() {
     // Add axes to chart
     addAxes();
   
-    // Update the chart for All cereals to initialize
+    // Update the chart for Total Deaths to initialize
     updateChart('Total Deaths');
   });
   
@@ -119,9 +114,6 @@ function onCategoryChanged() {
     .selectAll("text")
     .attr("transform", "rotate(-45)")
     .style("text-anchor", "end");
-  //xaxis content(ages)
-  
-  
   
   const textElements = svg
     .append('g')
@@ -134,11 +126,6 @@ function onCategoryChanged() {
     .text(d => d[2])
     .style("font-size","11px")
     .attr("transform", (d, i) => `rotate(-45 ${d[0]} ${d[1]})`);
-  
-  
-//   svg.append('g')
-//   .attr('transform', `translate(${padding.l}, ${padding.t})`)
-//   .call(yAxis);
   
   chartG.append('text').text('Transportation Deaths')
           .attr('x', chartWidth / 2)
@@ -164,16 +151,12 @@ function onCategoryChanged() {
   }
   
   function updateChart(manufacturer) {
-    //  Create a filtered array of cereals based on the manufacturer
-    // var deaths = manufacturer === 'Total Deaths' ? data : data.filter(d => d.manufacturer === manufacturer);
-    
     deaths = data;
     console.log('Updating chart with', deaths.length, 'elements')
     console.log(deaths)
     console.log(manufacturer)
     const cutoff = Number(document.getElementById('cutoff').value);
     console.log(function(d){return maleDeathScale(d.maleDeaths)});
-    // deaths = deaths.filter(d => manufacturer >= cutoff)
 
     // **** Draw and Update your chart here ****
     const barGroups = chartG.selectAll('.bar-group')
@@ -207,12 +190,6 @@ function onCategoryChanged() {
         }
         return "bar"
       })
-      
-      // .attr('color',function(d) {
-      //   if (d < cutoff) {
-      //     return 'white';
-      //   }
-      // })
   }
   
   switch (manufacturer) {
