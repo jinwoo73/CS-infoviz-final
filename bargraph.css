@@ -12,6 +12,9 @@ body {
 .bar {
   fill: #4571C9;
 }
+.emptybar {
+  fill:"lightblue"
+}
 #main {
   margin: 20px;
 }
