@@ -185,6 +185,9 @@ function onCategoryChanged() {
         .attr('transform', (d, i) => `translate(${5 + i * barBand}, 0)`);
     const  totaldeaths = [0.0,1.7,0.9,4.6,8.3,8.1,7.2,6.2,5.4,5.0,5.3,5.9,5.3,4.0,3.1,2.4,1.7,1.8];
     const maledeaths = [0.0,1.6,1.0,5.3,9.9,9.9,9.1,7.6,6.7,6.3,6.6,7.5,6.6,7.5,6.6,4.8,3.5,2.6,1.8,1.9];
+    const maleRate = [0.0, 0.45, 1.125, 4.625, 6.825, 6.35, 5.875, 5.225, 5.025, 4.775, 4.95, 5.35, 4.975, 4.3, 3.875, 4.4, 4.925, 5.9];
+    const femaleRate = [0.0, 1.5, 2.6, 8.6, 10, 9.3, 8.1, 7.4, 6.7, 6.4, 6.6, 6.4, 6.1, 5.6, 6.3, 7.9, 9.1, 7.9];
+    const femaledeaths = [0.0, 3.68, 1.59, 7.05, 9.99, 9.94, 9.11, 8.10, 6.88, 6.49, 6.87, 7.05, 6.60, 5.32, 4.95, 4.36, 3.38, 3.34];
     if (manufacturer == "Total Deaths") {
       groupEnter.append('rect')
         .data(totaldeaths)
@@ -209,26 +212,38 @@ function onCategoryChanged() {
         .attr('class', 'bar')
     }
     else if(manufacturer === "Female Deaths") {
-        groupEnter.append('rect')
-        .attr('width', barWidth)
-        .attr('height', d => chartHeight - femaleDeathScale(d.femaleDeaths))
-        .attr('y', d => (femaleDeathScale(d.femaleDeaths)))
-        .attr('class', 'bar')
-    }
-    else if(manufacturer === "Male Rate per 100k") {
-        groupEnter.append('rect')
-        .attr('width', barWidth)
-        .attr('height', d => chartHeight - maleRateScale(d.maleRate))
-        .attr('y', d => (maleRateScale(d.maleRate)))
-        .attr('class', 'bar')
-    }
-    else if(manufacturer === "Female Rate per 100k") {
-        groupEnter.append('rect')
-        .attr('width', barWidth)
-        .attr('height', d => chartHeight - femaleRateScale(d.femaleRate))
-        .attr('y', d => (femaleRateScale(d.femaleRate)))
-        .attr('class', 'bar')
-    }
+    groupEnter.append('rect')
+    .data(femaledeaths)
+    .attr('width', barWidth-2)
+      .attr('height', d =>  19*d)
+      .attr('x',function(d,i) {
+          return -38 + 2.7*i;
+      })
+      .attr('y', d => 190-19*d)
+      .attr('class', 'bar')
+  }
+  else if(manufacturer === "Male Rate per 100k") {
+    groupEnter.append('rect')
+    .data(maleRate)
+    .attr('width', barWidth-2)
+      .attr('height', d =>  19*d)
+      .attr('x',function(d,i) {
+          return -38 + 2.7*i;
+      })
+      .attr('y', d => 190-19*d)
+      .attr('class', 'bar')
+  }
+  else if(manufacturer === "Female Rate per 100k") {
+    groupEnter.append('rect')
+    .data(femaleRate)
+    .attr('width', barWidth-2)
+      .attr('height', d =>  19*d)
+      .attr('x',function(d,i) {
+          return -38 + 2.7*i;
+      })
+      .attr('y', d => 190-19*d)
+      .attr('class', 'bar')
+  }
     
 
     groupEnter.append('text')
