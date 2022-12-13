@@ -184,12 +184,12 @@ function onCategoryChanged() {
         return -38 + 2.7 * i;
       })
       .attr('y', d => 190 - 19 * d)
-      .attr('class', function(d) {
-        if (d <cutoff) {
-          return "emptybar"
-        }
-        return "bar"
-      })
+      .attr('fill', function(d) {
+      if (d <cutoff) {
+        return "lightblue";
+      }
+      return "#4571C9";
+    })
   }
   
   switch (manufacturer) {
